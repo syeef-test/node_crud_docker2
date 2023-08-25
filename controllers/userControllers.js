@@ -44,6 +44,7 @@ exports.createUser = async (req, res, next) => {
     }
   } catch (err) {
     console.log(err);
+    res.status(400).json({ message: "Invalid input data" });
   }
 };
 
@@ -56,24 +57,16 @@ exports.updateUser = async (req, res, next) => {
     const email = req.body.email;
 
     const user = await userModel.findByPk(userId);
-    if (user) {
-      const userDetails = await userModel.update(
-        { name: name, email: email },
-        { where: { id: userId } }
-      );
-      if (userDetails) {
-        res.status(200).json({
-          message: "User Upadted Succesfully",
-          user: userDetails,
-        });
-      }
-    } else {
-      res.status(401).json({
-        message: "No User Found",
-      });
+    if (!user) {
+      return res.status(404).json({ message: "No User Found" });
     }
+
+    const userDetails = await user.update({ name: name, email: email });
+
+    res.status(200).json({ message: "User Updated Successfully" });
   } catch (err) {
     console.log(err);
+    res.status(400).json({ message: "Invalid input data" });
   }
 };
 
