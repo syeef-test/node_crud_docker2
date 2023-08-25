@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  node_app2:
+    container_name: node_app2
+    build: .
+    image: kazisyeef/node_docker_app2
+    ports:
+      - "3000:3000"  
+    environment:
+      - PG_DB=node_docker_db2
+      - PG_USER=kazisyeef
+      - PG_PASSWORD=12345
+      - PG_HOST=node_db2  
+    depends_on:
+      - node_db2 
+    restart: always
+
+  node_db2:
+    container_name: node_db2
+    image: postgres:12
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=node_docker_db2
+      - POSTGRES_USER=kazisyeef
+      - POSTGRES_PASSWORD=12345
+    volumes:
+      - node_db_data:/var/lib/postgresql/data
+
+volumes:
+  node_db_data: {}

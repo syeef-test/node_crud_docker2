@@ -5,7 +5,7 @@ const userModel = require("../models/userModel");
 //GET ALL USERS
 exports.getUsers = async (req, res, next) => {
   try {
-    const userDetails = userModel.findAll();
+    const userDetails = await userModel.findAll();
     if (userDetails) {
       res.status(200).json({ users: userDetails });
     }
@@ -18,7 +18,7 @@ exports.getUsers = async (req, res, next) => {
 exports.getUser = async (req, res, next) => {
   try {
     const userId = req.params.userId;
-    const userDetails = userModel.findByPk(userId);
+    const userDetails = await userModel.findByPk(userId);
     if (userDetails) {
       res.status(200).json({ user: userDetails });
     } else {
@@ -35,7 +35,8 @@ exports.createUser = async (req, res, next) => {
   try {
     const name = req.body.name;
     const email = req.body.email;
-    const userDetails = userModel.create({ name: name, email: email });
+    console.log(name, email);
+    const userDetails = await userModel.create({ name: name, email: email });
     if (userDetails) {
       res
         .status(201)
@@ -54,9 +55,9 @@ exports.updateUser = async (req, res, next) => {
     const name = req.body.name;
     const email = req.body.email;
 
-    const user = userModel.findByPk(userId);
+    const user = await userModel.findByPk(userId);
     if (user) {
-      const userDetails = userModel.update(
+      const userDetails = await userModel.update(
         { name: name, email: email },
         { where: { id: userId } }
       );
@@ -82,7 +83,7 @@ exports.deleteUser = async (req, res, next) => {
   try {
     const userId = req.params.userId;
 
-    const user = userModel.findByPk(userId);
+    const user = await userModel.findByPk(userId);
     if (!user) {
       res.status(401).json({
         message: "No User Found",
